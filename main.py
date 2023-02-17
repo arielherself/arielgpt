@@ -67,7 +67,7 @@ async def reply(message: telebot.types.Message) -> int:
                             if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                                 p = op(segment['message'].replace('**', '*'))
                                 try:
-                                    await bot.edit_message_text(p, s.chat.id, s.message_id, parse_mode='Markdown')
+                                    await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, parse_mode='Markdown')
                                 except:
                                     pass
                         await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
@@ -92,7 +92,7 @@ async def reply(message: telebot.types.Message) -> int:
                         if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                             p = op(segment['message'].replace('**', '*'))
                             try:
-                                await bot.edit_message_text(p, s.chat.id, s.message_id, parse_mode='Markdown')
+                                await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, parse_mode='Markdown')
                             except:
                                 pass
                     await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
@@ -133,7 +133,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                     p = op(f'*Query: {text}* \n' + segment['message'].replace('**', '*'))
                     try:
-                        await bot.edit_message_text(p, s.chat.id, s.message_id,  parse_mode='Markdown')
+                        await bot.edit_message_text(p+' ...', s.chat.id, s.message_id,  parse_mode='Markdown')
                     except:
                         pass
             await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
