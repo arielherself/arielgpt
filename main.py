@@ -7,7 +7,10 @@ from revChatGPT.V1 import Chatbot
 import local_secrets
 
 COOLDOWN: float = 2.0
-VOID_HINT = "*ChatGPT didn't respond to your query.* \nThis is often caused by:\n  1. Requesting too frequently;\n  2. Too much repeated questions.\n\nTo resolve this, you can wait for about 1 hour or use /gpt command to randomly switch to another OpenAI account in the pool."
+VOID_HINT = "*ChatGPT didn't respond to your query.* \nThis is often caused by:\n  1. Requesting too frequently;\n  2. Too much repeated questions;\n  3. ChatGPT is at \
+capacity right now.\n\nTo resolve this, you should first visit chat.openai.com and \
+check if there's a bulletin that shows ChatGPT has melt down. If not so, you can wait for about 1 hour \
+or use /gpt command to randomly switch to another OpenAI account in the pool."
 
 chatgpt = [Chatbot(config=info) for info in local_secrets.OPENAI_LOGIN_INFO]
 bot = AsyncTeleBot(local_secrets.BOT_TOKEN)
