@@ -6,7 +6,7 @@ from telebot.async_telebot import AsyncTeleBot
 from revChatGPT.V1 import Chatbot
 import local_secrets
 
-COOLDOWN: float = 1.5
+COOLDOWN: float = 2.0
 
 chatgpt = [Chatbot(config=info) for info in local_secrets.OPENAI_LOGIN_INFO]
 bot = AsyncTeleBot(local_secrets.BOT_TOKEN)
