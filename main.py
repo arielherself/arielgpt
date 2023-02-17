@@ -92,6 +92,9 @@ async def reply(message: telebot.types.Message) -> int:
 
                 elif cmd == '/start':
                     await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /gpt to start chatting.")
+                elif cmd == '/reset':
+                    chatgpt.reset_chat()
+                    await bot.reply_to(message, "The conversation is reset.")
             else:
                 arg = message.text
                 if arg.strip() == '':
