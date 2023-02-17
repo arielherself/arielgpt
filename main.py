@@ -74,6 +74,7 @@ async def reply(message: telebot.types.Message) -> int:
                                 timenow = time.time()
                             else:
                                 continue
+                            print('Generating...')
                             if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                                 p = op(segment['message'].replace('**', '*'))
                                 try:
