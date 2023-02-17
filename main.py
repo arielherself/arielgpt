@@ -10,6 +10,7 @@ COOLDOWN: float = 1.5
 
 chatgpt = [Chatbot(config=info) for info in local_secrets.OPENAI_LOGIN_INFO]
 bot = AsyncTeleBot(local_secrets.BOT_TOKEN)
+current_gpt = random.choice(chatgpt)
 
 print('Started.')
 
@@ -48,6 +49,7 @@ def regenMarkup(t: str) -> telebot.types.InlineKeyboardMarkup:
 async def reply(message: telebot.types.Message) -> int:
     global oc
     global forceStopFlag
+    global current_gpt
     try:
         if oc:
             print('Entry 1')
@@ -67,7 +69,8 @@ async def reply(message: telebot.types.Message) -> int:
                         await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                     else:
                         s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-                        r = random.choice(chatgpt).ask(prompt=arg)
+                        current_gpt = random.choice(chatgpt)
+                        r = current_gpt.ask(prompt=arg)
                         m = regenMarkup(arg)
                         m1 = stopMarkup()
                         p = ''
@@ -95,7 +98,7 @@ async def reply(message: telebot.types.Message) -> int:
                 elif cmd == '/start':
                     await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /gpt to start chatting.")
                 elif cmd == '/reset':
-                    chatgpt.reset_chat()
+                    [gpt.reset_chat() for gpt in chatgpt]
                     await bot.reply_to(message, "The conversation is reset.")
             else:
                 arg = message.text
@@ -103,7 +106,7 @@ async def reply(message: telebot.types.Message) -> int:
                     await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                 else:
                     s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-                    r = random.choice(chatgpt).ask(prompt=arg)
+                    r = current_gpt.ask(prompt=arg)
                     m = regenMarkup(arg)
                     m1 = stopMarkup()
                     p = ''
@@ -142,6 +145,7 @@ async def reply(message: telebot.types.Message) -> int:
 async def callbackReply(callback_query: telebot.types.CallbackQuery):
     global oc
     global forceStopFlag
+    global current_gpt
     try:
         if callback_query.data == '$$$$':
             forceStopFlag = True
@@ -157,7 +161,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 text = text[:-3]
             else:
                 s = await bot.reply_to(callback_query.message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-            r = random.choice(chatgpt).ask(prompt=text)        
+            r = current_gpt.ask(prompt=text)        
             m = regenMarkup(text)
             m1 = stopMarkup()
             p = ''
