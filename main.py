@@ -180,9 +180,9 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
         if callback_query.data == '$$$$':
             if not forceStopFlag:
                 forceStopFlag = True
-                bot.answer_callback_query(callback_query.id, 'OK. Stopping the generating process...')
+                await bot.answer_callback_query(callback_query.id, 'OK. Stopping the generating process...')
             else:
-                bot.answer_callback_query(callback_query.id, 'No process to stop.')
+                await bot.answer_callback_query(callback_query.id, 'No process to stop.')
             return
         if oc:
             print('Entry 2')
@@ -195,6 +195,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 text = text[:-3]
             else:
                 s = await bot.reply_to(callback_query.message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
+            await bot.answer_callback_query(callback_query.id, 'Tip: Do not repeat questions too frequently.')
             r = current_gpt.ask(prompt=text)        
             m = regenMarkup(text)
             m1 = stopMarkup()
