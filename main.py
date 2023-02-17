@@ -1,3 +1,4 @@
+import time
 import asyncio
 import telebot
 from telebot.async_telebot import AsyncTeleBot
@@ -57,14 +58,19 @@ async def reply(message: telebot.types.Message) -> int:
                         r = chatgpt.ask(prompt=arg)
                         m = regenMarkup(arg)
                         p = ''
+                        timenow = time.time()
                         for segment in r:
+                            if time.time() - timenow >= 1:
+                                timenow = time.time()
+                            else:
+                                continue
                             if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                                 p = op(segment['message'].replace('**', '*'))
                                 try:
                                     await bot.edit_message_text(p, s.chat.id, s.message_id, parse_mode='Markdown')
                                 except:
                                     pass
-                        await bot.edit_message_text(p+'\u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                        await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
 
                 elif cmd == '/start':
                     await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /gpt to start chatting.")
@@ -77,14 +83,19 @@ async def reply(message: telebot.types.Message) -> int:
                     r = chatgpt.ask(prompt=arg)
                     m = regenMarkup(arg)
                     p = ''
+                    timenow = time.time()
                     for segment in r:
+                        if time.time() - timenow >= 1:
+                            timenow = time.time()
+                        else:
+                            continue
                         if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                             p = op(segment['message'].replace('**', '*'))
                             try:
                                 await bot.edit_message_text(p, s.chat.id, s.message_id, parse_mode='Markdown')
                             except:
                                 pass
-                    await bot.edit_message_text(p+'\u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                    await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
             oc = False
     except Exception as e:
         oc = False
@@ -113,14 +124,19 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             r = chatgpt.ask(prompt=text)        
             m = regenMarkup(text)
             p = ''
+            timenow = time.time()
             for segment in r:
+                if time.time() - timenow >= 1:
+                    timenow = time.time()
+                else:
+                    continue
                 if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                     p = op(f'*Query: {text}* \n' + segment['message'].replace('**', '*'))
                     try:
                         await bot.edit_message_text(p, s.chat.id, s.message_id,  parse_mode='Markdown')
                     except:
                         pass
-            await bot.edit_message_text(p+'\u25A1', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
+            await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
             oc = False
     except Exception as e:
         print(f'Error: {e}')
