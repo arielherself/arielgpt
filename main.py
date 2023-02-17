@@ -49,9 +49,9 @@ async def reply(message: telebot.types.Message) -> int:
                     arg = ''
                 else:
                     cmd, arg = l
-                if cmd == '/chat':
+                if cmd == '/gpt':
                     if arg.strip() == '':
-                        await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/chat Who is Ariel?</code>", parse_mode='html')
+                        await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                     else:
                         s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
                         r = chatgpt.ask(prompt=arg)
@@ -67,11 +67,11 @@ async def reply(message: telebot.types.Message) -> int:
                         await bot.edit_message_text(p+'\u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
 
                 elif cmd == '/start':
-                    await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /chat to start chatting.")
+                    await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /gpt to start chatting.")
             else:
                 arg = message.text
                 if arg.strip() == '':
-                    await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/chat Who is Ariel?</code>", parse_mode='html')
+                    await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                 else:
                     s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
                     r = chatgpt.ask(prompt=arg)
@@ -89,8 +89,8 @@ async def reply(message: telebot.types.Message) -> int:
     except Exception as e:
         oc = False
         print(f'Error: {e}')
-        if message.text.startswith('/chat '):
-            t = message.text[message.text.find('/chat ')+6:].strip()
+        if message.text.startswith('/gpt '):
+            t = message.text[message.text.find('/gpt ')+5:].strip()
         else:
             t = message.text.strip()
         m = regenMarkup(t)
