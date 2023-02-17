@@ -20,6 +20,7 @@ print('Started.')
 #     print(response)
 
 oc = False
+forceStopFlag = False
 
 def op(msg: str):
     n = msg
@@ -28,6 +29,11 @@ def op(msg: str):
     except Exception as e:
         print(f'Error: {e}')
     return n
+
+def stopMarkup() -> telebot.types.InlineKeyboardMarkup:
+    u = telebot.types.InlineKeyboardMarkup()
+    u.add(telebot.types.InlineKeyboardButton('\u274C Stop generating', callback_data='$$$$'))
+    return u
 
 def regenMarkup(t: str) -> telebot.types.InlineKeyboardMarkup:
     u = telebot.types.InlineKeyboardMarkup()
@@ -40,6 +46,7 @@ def regenMarkup(t: str) -> telebot.types.InlineKeyboardMarkup:
 @bot.message_handler()
 async def reply(message: telebot.types.Message) -> int:
     global oc
+    global forceStopFlag
     try:
         if oc:
             await bot.reply_to(message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended.')
@@ -59,6 +66,7 @@ async def reply(message: telebot.types.Message) -> int:
                         s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
                         r = chatgpt.ask(prompt=arg)
                         m = regenMarkup(arg)
+                        m1 = stopMarkup()
                         p = ''
                         timenow = time.time()
                         for segment in r:
@@ -69,7 +77,7 @@ async def reply(message: telebot.types.Message) -> int:
                             if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                                 p = op(segment['message'].replace('**', '*'))
                                 try:
-                                    await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, parse_mode='Markdown')
+                                    await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                                 except:
                                     pass
                         await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
@@ -84,9 +92,12 @@ async def reply(message: telebot.types.Message) -> int:
                     s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
                     r = chatgpt.ask(prompt=arg)
                     m = regenMarkup(arg)
+                    m1 = stopMarkup()
                     p = ''
                     timenow = time.time()
                     for segment in r:
+                        if forceStopFlag:
+                            break
                         if time.time() - timenow >= COOLDOWN:
                             timenow = time.time()
                         else:
@@ -94,13 +105,18 @@ async def reply(message: telebot.types.Message) -> int:
                         if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                             p = op(segment['message'].replace('**', '*'))
                             try:
-                                await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, parse_mode='Markdown')
+                                await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                             except:
                                 pass
-                    await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                    if forceStopFlag:
+                        await bot.edit_message_text(p+' \u2717', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                    else:
+                        await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
             oc = False
+            forceStopFlag = False
     except Exception as e:
         oc = False
+        forceStopFlag = False
         print(f'Error: {e}')
         if message.text.startswith('/gpt '):
             t = message.text[message.text.find('/gpt ')+5:].strip()
@@ -112,7 +128,11 @@ async def reply(message: telebot.types.Message) -> int:
 @bot.callback_query_handler(lambda _: True)
 async def callbackReply(callback_query: telebot.types.CallbackQuery):
     global oc
+    global forceStopFlag
     try:
+        if callback_query.message == '$$$$':
+            forceStopFlag = True
+            return
         if oc:
             await bot.reply_to(callback_query.message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended. Please wait until the last response is generated.')
         else:
@@ -125,9 +145,12 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 s = await bot.reply_to(callback_query.message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
             r = chatgpt.ask(prompt=text)        
             m = regenMarkup(text)
+            m1 = stopMarkup()
             p = ''
             timenow = time.time()
             for segment in r:
+                if forceStopFlag:
+                    break
                 if time.time() - timenow >= COOLDOWN:
                     timenow = time.time()
                 else:
@@ -135,10 +158,13 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
                     p = op(f'*Query: {text}* \n' + segment['message'].replace('**', '*'))
                     try:
-                        await bot.edit_message_text(p+' ...', s.chat.id, s.message_id,  parse_mode='Markdown')
+                        await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, reply_markup=m1,  parse_mode='Markdown')
                     except:
                         pass
-            await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
+            if forceStopFlag:
+                await bot.edit_message_text(p+' \u2717', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
+            else:
+                await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
             oc = False
     except Exception as e:
         print(f'Error: {e}')
