@@ -32,7 +32,7 @@ def op(msg: str):
 
 def stopMarkup() -> telebot.types.InlineKeyboardMarkup:
     u = telebot.types.InlineKeyboardMarkup()
-    u.add(telebot.types.InlineKeyboardButton('\u274C Stop generating', callback_data='$$$$'))
+    u.add(telebot.types.InlineKeyboardButton('\u23F9 Stop generating', callback_data='$$$$'))
     return u
 
 def regenMarkup(t: str) -> telebot.types.InlineKeyboardMarkup:
