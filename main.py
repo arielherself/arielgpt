@@ -138,7 +138,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
     global oc
     global forceStopFlag
     try:
-        if callback_query.message == '$$$$':
+        if callback_query.data == '$$$$':
             forceStopFlag = True
             return
         if oc:
