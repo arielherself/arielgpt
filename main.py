@@ -209,7 +209,12 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
             oc = False
     except Exception as e:
+        oc = False
+        forceStopFlag = False
         print(f'Error: {e}')
+        t = text
+        m = regenMarkup(t)
+        await bot.reply_to(callback_query.message, f'I encountered an error while generating a response: \n\n<code>{e}</code>', reply_markup=m, parse_mode='html')
 
 if __name__ == '__main__':
     asyncio.run(bot.polling(non_stop=True, timeout=180))
