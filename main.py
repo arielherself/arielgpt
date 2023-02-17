@@ -70,6 +70,8 @@ async def reply(message: telebot.types.Message) -> int:
                         p = ''
                         timenow = time.time()
                         for segment in r:
+                            if forceStopFlag:
+                                break
                             if time.time() - timenow >= COOLDOWN:
                                 timenow = time.time()
                             else:
@@ -82,7 +84,10 @@ async def reply(message: telebot.types.Message) -> int:
                                     await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                                 except:
                                     pass
-                        await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                        if forceStopFlag:
+                            await bot.edit_message_text(p+' \u2717', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                        else:
+                            await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
 
                 elif cmd == '/start':
                     await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /gpt to start chatting.")
