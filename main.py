@@ -104,14 +104,17 @@ async def reply(message: telebot.types.Message) -> int:
                             # print(segment)
                             if segment['message'].strip() != '':
                                 p = op(segment['message'].replace('**', '*'))
-                                try:
-                                    if time.time() - timenow >= COOLDOWN:
-                                        timenow = time.time()
+                                if time.time() - timenow >= COOLDOWN:
+                                    timenow = time.time()
+                                else:
+                                    continue
+                                while True:
+                                    try:
+                                        await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
+                                    except:
+                                        await asyncio.sleep(15)
                                     else:
-                                        continue
-                                    await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
-                                except:
-                                    pass
+                                        break
                         if forceStopFlag:
                             await bot.edit_message_text(p+' \u2717', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
                         else:
@@ -140,14 +143,17 @@ async def reply(message: telebot.types.Message) -> int:
                             break
                         if segment['message'].strip() != '':
                             p = op(segment['message'].replace('**', '*'))
-                            try:
-                                if time.time() - timenow >= COOLDOWN:
-                                    timenow = time.time()
+                            if time.time() - timenow >= COOLDOWN:
+                                timenow = time.time()
+                            else:
+                                continue
+                            while True:
+                                try:
+                                    await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
+                                except:
+                                    await asyncio.sleep(15)
                                 else:
-                                    continue
-                                await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
-                            except:
-                                pass
+                                    break
                     if forceStopFlag:
                         await bot.edit_message_text(p+' \u2717', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
                     else:
@@ -195,14 +201,17 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                     break
                 if segment['message'].strip() != '':
                     p = op(f'*Query: {text}* \n' + segment['message'].replace('**', '*'))
-                    try:
-                        if time.time() - timenow >= COOLDOWN:
-                            timenow = time.time()
+                    if time.time() - timenow >= COOLDOWN:
+                        timenow = time.time()
+                    else:
+                        continue
+                    while True:
+                        try:
+                            await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1,  parse_mode='Markdown')
+                        except:
+                            await asyncio.sleep(15)
                         else:
-                            continue
-                        await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1,  parse_mode='Markdown')
-                    except:
-                        pass
+                            break
             if forceStopFlag:
                 await bot.edit_message_text(p+' \u2717', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
             else:
