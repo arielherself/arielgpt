@@ -81,12 +81,11 @@ async def reply(message: telebot.types.Message) -> int:
                 l = message.text.split(' ', 1)
                 if len(l) == 1:
                     cmd = l[0]
-                    if cmd.find('@') != -1:
-                        cmd = cmd[:cmd.find('@')]
+                    print(cmd+'.')
                     arg = ''
                 else:
                     cmd, arg = l
-                if cmd == '/gpt':
+                if cmd == '/gpt' or cmd.startswith('/gpt@'):
                     if arg.strip() == '':
                         await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                     else:
@@ -119,9 +118,9 @@ async def reply(message: telebot.types.Message) -> int:
                                 p = VOID_HINT
                             await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
 
-                elif cmd == '/start':
+                elif cmd == '/start' or cmd.startswith('/start@'):
                     await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /gpt to start chatting.")
-                elif cmd == '/reset':
+                elif cmd == '/reset' or cmd.startswith('/reset@'):
                     [gpt.reset_chat() for gpt in chatgpt]
                     await bot.reply_to(message, "The conversation is reset.")
             else:
