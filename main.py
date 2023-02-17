@@ -205,6 +205,8 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             if forceStopFlag:
                 await bot.edit_message_text(p+' \u2717', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
             else:
+                if p == '':
+                    p = VOID_HINT
                 await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m,  parse_mode='Markdown')
             oc = False
     except Exception as e:
