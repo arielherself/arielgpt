@@ -81,7 +81,8 @@ async def reply(message: telebot.types.Message) -> int:
                 l = message.text.split(' ', 1)
                 if len(l) == 1:
                     cmd = l[0]
-                    cmd = cmd[:cmd.find('@')]
+                    if cmd.find('@') != -1:
+                        cmd = cmd[:cmd.find('@')]
                     arg = ''
                 else:
                     cmd, arg = l
@@ -159,10 +160,7 @@ async def reply(message: telebot.types.Message) -> int:
         oc = False
         forceStopFlag = False
         print(f'Error: {e}')
-        if message.text.startswith('/gpt '):
-            t = message.text[message.text.find('/gpt ')+5:].strip()
-        else:
-            t = message.text.strip()
+        t = message.text.split(' ', 1)[-1].strip()
         m = regenMarkup(t)
         await bot.reply_to(message, f'I encountered an error while generating a response: \n\n<code>{e}</code>', reply_markup=m, parse_mode='html')
 
