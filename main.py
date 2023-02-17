@@ -12,6 +12,21 @@ chatgpt = [Chatbot(config=info) for info in local_secrets.OPENAI_LOGIN_INFO]
 bot = AsyncTeleBot(local_secrets.BOT_TOKEN)
 current_gpt = random.choice(chatgpt)
 
+class Spinner:
+    def __init__(self):
+        self._current = '|'
+    @property
+    def spin(self):
+        if self._current == '|':
+            self._current = '/'
+        elif self._current == '/':
+            self._current = '-'
+        elif self._current == '-':
+            self._current = '\\'
+        elif self._current == '\\':
+            self._current = '|'
+        return self._current
+
 print('Started.')
 
 # prompt = "Hello!"
@@ -23,6 +38,7 @@ print('Started.')
 
 oc = False
 forceStopFlag = False
+spinner = Spinner()
 
 def op(msg: str):
     n = msg
@@ -50,6 +66,7 @@ async def reply(message: telebot.types.Message) -> int:
     global oc
     global forceStopFlag
     global current_gpt
+    global spinner
     try:
         if oc:
             print('Entry 1')
@@ -84,10 +101,10 @@ async def reply(message: telebot.types.Message) -> int:
                                 continue
                             # print(f'Generating...: {segment["message"]}')
                             # print(segment)
-                            if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
+                            if segment['message'].strip() != '':
                                 p = op(segment['message'].replace('**', '*'))
                                 try:
-                                    await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
+                                    await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                                 except:
                                     pass
                         if forceStopFlag:
@@ -118,10 +135,10 @@ async def reply(message: telebot.types.Message) -> int:
                             timenow = time.time()
                         else:
                             continue
-                        if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
+                        if segment['message'].strip() != '':
                             p = op(segment['message'].replace('**', '*'))
                             try:
-                                await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
+                                await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                             except:
                                 pass
                     if forceStopFlag:
@@ -146,6 +163,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
     global oc
     global forceStopFlag
     global current_gpt
+    global spinner
     try:
         if callback_query.data == '$$$$':
             forceStopFlag = True
@@ -173,10 +191,10 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                     timenow = time.time()
                 else:
                     continue
-                if segment['message'].strip() != '' and op(segment['message'].replace('**', '*')) != p:
+                if segment['message'].strip() != '':
                     p = op(f'*Query: {text}* \n' + segment['message'].replace('**', '*'))
                     try:
-                        await bot.edit_message_text(p+' ...', s.chat.id, s.message_id, reply_markup=m1,  parse_mode='Markdown')
+                        await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1,  parse_mode='Markdown')
                     except:
                         pass
             if forceStopFlag:
