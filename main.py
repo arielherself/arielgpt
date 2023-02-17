@@ -100,15 +100,15 @@ async def reply(message: telebot.types.Message) -> int:
                         for segment in r:
                             if forceStopFlag:
                                 break
-                            if time.time() - timenow >= COOLDOWN:
-                                timenow = time.time()
-                            else:
-                                continue
                             # print(f'Generating...: {segment["message"]}')
                             # print(segment)
                             if segment['message'].strip() != '':
                                 p = op(segment['message'].replace('**', '*'))
                                 try:
+                                    if time.time() - timenow >= COOLDOWN:
+                                        timenow = time.time()
+                                    else:
+                                        continue
                                     await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                                 except:
                                     pass
@@ -138,13 +138,13 @@ async def reply(message: telebot.types.Message) -> int:
                     for segment in r:
                         if forceStopFlag:
                             break
-                        if time.time() - timenow >= COOLDOWN:
-                            timenow = time.time()
-                        else:
-                            continue
                         if segment['message'].strip() != '':
                             p = op(segment['message'].replace('**', '*'))
                             try:
+                                if time.time() - timenow >= COOLDOWN:
+                                    timenow = time.time()
+                                else:
+                                    continue
                                 await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                             except:
                                 pass
@@ -193,13 +193,13 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             for segment in r:
                 if forceStopFlag:
                     break
-                if time.time() - timenow >= COOLDOWN:
-                    timenow = time.time()
-                else:
-                    continue
                 if segment['message'].strip() != '':
                     p = op(f'*Query: {text}* \n' + segment['message'].replace('**', '*'))
                     try:
+                        if time.time() - timenow >= COOLDOWN:
+                            timenow = time.time()
+                        else:
+                            continue
                         await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1,  parse_mode='Markdown')
                     except:
                         pass
