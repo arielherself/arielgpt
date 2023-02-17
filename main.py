@@ -49,6 +49,7 @@ async def reply(message: telebot.types.Message) -> int:
     global forceStopFlag
     try:
         if oc:
+            print('Entry 1')
             await bot.reply_to(message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended.')
         else:
             oc = True
@@ -141,6 +142,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             forceStopFlag = True
             return
         if oc:
+            print('Entry 2')
             await bot.reply_to(callback_query.message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended. Please wait until the last response is generated.')
         else:
             oc = True
