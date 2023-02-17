@@ -64,7 +64,7 @@ def regenMarkup(t: str) -> telebot.types.InlineKeyboardMarkup:
     if len(t.encode('utf8')) < 60:
         u.add(telebot.types.InlineKeyboardButton('\u27F2 Regenerate response', callback_data=t+' $$'))
     else:
-        u.add(telebot.types.InlineKeyboardButton('Response not parsed', url='https://t.me/arielsydneybot'))
+        u.add(telebot.types.InlineKeyboardButton('Response not parsed', url='https://t.me/arielgpt2bot'))
     return u
 
 @bot.message_handler()
