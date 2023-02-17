@@ -78,7 +78,6 @@ async def reply(message: telebot.types.Message) -> int:
             print('Entry 1')
             await bot.reply_to(message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended.')
         else:
-            oc = True
             if message.text.split(' ', 1)[0].startswith('/'):
                 l = message.text.split(' ', 1)
                 if len(l) == 1:
@@ -90,6 +89,7 @@ async def reply(message: telebot.types.Message) -> int:
                     if arg.strip() == '':
                         await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                     else:
+                        oc = True
                         s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
                         current_gpt = random.choice(chatgpt)
                         r = current_gpt.ask(prompt=arg)
@@ -121,10 +121,13 @@ async def reply(message: telebot.types.Message) -> int:
                             if p == '':
                                 p = VOID_HINT
                             await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                        oc = False
+                        forceStopFlag = False
 
                 elif cmd == '/start' or cmd.startswith('/start@'):
                     await bot.reply_to(message, "Hello, I am Ariel GPT, a LLM optimised for dialogues! Use /gpt to start chatting.")
                 elif cmd == '/reset' or cmd.startswith('/reset@'):
+                    forceStopFlag = False
                     [gpt.reset_chat() for gpt in chatgpt]
                     await bot.reply_to(message, "The conversation is reset.")
             else:
@@ -160,8 +163,7 @@ async def reply(message: telebot.types.Message) -> int:
                         if p == '':
                             p = VOID_HINT
                         await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
-            oc = False
-            forceStopFlag = False
+
     except Exception as e:
         oc = False
         forceStopFlag = False
