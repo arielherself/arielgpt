@@ -81,7 +81,6 @@ async def reply(message: telebot.types.Message) -> int:
                 l = message.text.split(' ', 1)
                 if len(l) == 1:
                     cmd = l[0]
-                    print(cmd+'.')
                     arg = ''
                 else:
                     cmd, arg = l
