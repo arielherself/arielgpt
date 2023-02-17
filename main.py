@@ -10,7 +10,7 @@ COOLDOWN: float = 2.0
 AN = "This is often caused by:\n  1. Requesting too frequently;\n  2. Too many repeated questions;\n  3. ChatGPT is at \
 capacity right now.\n\nTo resolve this, you should first visit chat.openai.com and \
 check if there's a bulletin about service outage. If not so, you can wait for about 1 hour \
-or use /gpt command to randomly switch to another OpenAI account in the pool."
+or use /gpt command to randomly switch to another OpenAI account in the pool.\nSometimes, /reset command also helps."
 VOID_HINT = "*ChatGPT didn't respond to your query.* \n" + AN
 ERROR_HINT = '*ChatGPT returned an error to your query.*\n' + AN
 
