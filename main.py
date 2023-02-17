@@ -178,7 +178,11 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
     global spinner
     try:
         if callback_query.data == '$$$$':
-            forceStopFlag = True
+            if not forceStopFlag:
+                forceStopFlag = True
+                bot.answer_callback_query(callback_query.id, 'OK. Stopping the generating process...')
+            else:
+                bot.answer_callback_query(callback_query.id, 'No process to stop.')
             return
         if oc:
             print('Entry 2')
