@@ -1,4 +1,5 @@
 import time
+import random
 import asyncio
 import telebot
 from telebot.async_telebot import AsyncTeleBot
@@ -7,7 +8,7 @@ import local_secrets
 
 COOLDOWN: float = 1.5
 
-chatgpt = Chatbot(config=local_secrets.OPENAI_LOGIN_INFO)
+chatgpt = [Chatbot(config=info) for info in local_secrets.OPENAI_LOGIN_INFO]
 bot = AsyncTeleBot(local_secrets.BOT_TOKEN)
 
 print('Started.')
@@ -66,7 +67,7 @@ async def reply(message: telebot.types.Message) -> int:
                         await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                     else:
                         s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-                        r = chatgpt.ask(prompt=arg)
+                        r = random.choice(chatgpt).ask(prompt=arg)
                         m = regenMarkup(arg)
                         m1 = stopMarkup()
                         p = ''
@@ -102,7 +103,7 @@ async def reply(message: telebot.types.Message) -> int:
                     await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                 else:
                     s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-                    r = chatgpt.ask(prompt=arg)
+                    r = random.choice(chatgpt).ask(prompt=arg)
                     m = regenMarkup(arg)
                     m1 = stopMarkup()
                     p = ''
@@ -156,7 +157,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 text = text[:-3]
             else:
                 s = await bot.reply_to(callback_query.message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-            r = chatgpt.ask(prompt=text)        
+            r = random.choice(chatgpt).ask(prompt=text)        
             m = regenMarkup(text)
             m1 = stopMarkup()
             p = ''
