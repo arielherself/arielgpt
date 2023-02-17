@@ -5,6 +5,8 @@ from telebot.async_telebot import AsyncTeleBot
 from revChatGPT.V1 import Chatbot
 import local_secrets
 
+COOLDOWN: float = 1.5
+
 chatgpt = Chatbot(config=local_secrets.OPENAI_LOGIN_INFO)
 bot = AsyncTeleBot(local_secrets.BOT_TOKEN)
 
@@ -60,7 +62,7 @@ async def reply(message: telebot.types.Message) -> int:
                         p = ''
                         timenow = time.time()
                         for segment in r:
-                            if time.time() - timenow >= 1:
+                            if time.time() - timenow >= COOLDOWN:
                                 timenow = time.time()
                             else:
                                 continue
@@ -85,7 +87,7 @@ async def reply(message: telebot.types.Message) -> int:
                     p = ''
                     timenow = time.time()
                     for segment in r:
-                        if time.time() - timenow >= 1:
+                        if time.time() - timenow >= COOLDOWN:
                             timenow = time.time()
                         else:
                             continue
@@ -126,7 +128,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             p = ''
             timenow = time.time()
             for segment in r:
-                if time.time() - timenow >= 1:
+                if time.time() - timenow >= COOLDOWN:
                     timenow = time.time()
                 else:
                     continue
