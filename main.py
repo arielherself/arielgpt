@@ -162,7 +162,7 @@ async def reply(message: telebot.types.Message) -> int:
         print(f'Error: {e}')
         t = message.text.split(' ', 1)[-1].strip()
         m = regenMarkup(t)
-        await bot.reply_to(message, f'I encountered an error while generating a response: \n\n<code>{e}</code>\n\n{ERROR_HINT}', reply_markup=m, parse_mode='html')
+        await bot.reply_to(message, f'I encountered an error while generating a response: \n\n`{e}`\n\n{ERROR_HINT}', reply_markup=m, parse_mode='Markdown')
 
 @bot.callback_query_handler(lambda _: True)
 async def callbackReply(callback_query: telebot.types.CallbackQuery):
@@ -216,7 +216,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
         print(f'Error: {e}')
         t = text
         m = regenMarkup(t)
-        await bot.reply_to(callback_query.message, f'I encountered an error while generating a response: \n\n<code>{e}</code>\n\n{ERROR_HINT}', reply_markup=m, parse_mode='html')
+        await bot.reply_to(callback_query.message, f'I encountered an error while generating a response: \n\n`{e}`\n\n{ERROR_HINT}', reply_markup=m, parse_mode='Markdown')
 
 if __name__ == '__main__':
     asyncio.run(bot.polling(non_stop=True, timeout=180))
