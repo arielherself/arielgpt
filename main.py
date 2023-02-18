@@ -13,6 +13,14 @@ check if there's a bulletin about service outage. If not so, you can wait for ab
 or use /gpt command to randomly switch to another OpenAI account in the pool.\nSometimes, /reset command also helps."
 VOID_HINT = "*ChatGPT didn't respond to your query.* \n" + AN
 ERROR_HINT = '*ChatGPT returned an error to your query.*\n' + AN
+TIPS = ('Sometimes Telegram marks the rolling text as a flood attack. Please be patient if the output is stuck at some point.', 
+        'Ariel GPT Plus gives you the ChatGPT Plus experience on Telegram. Subscribe to it now!', 
+        "If the bot doesn't respond to your message, you can reply to one of its messages.", 
+        "This bot has a mature exception-processing system. All you need is to wait until it gives you a satisfying response.", 
+        'Ariel GPT 2 supports account load-balance. There are multiple OpenAI accounts working for you.', 
+        'Regenerate response or repeat your question frequently can cause OpenAI to halt your requests for an hour.',
+        '/reset command helps you to start a new conversation.',
+        'When using /gpt before your prompt, Ariel GPT randomly choose an OpenAI account to use. If you reply to an answer, it will continue using the current account.')
 
 chatgpt = [Chatbot(config=info) for info in local_secrets.OPENAI_LOGIN_INFO]
 chatgpt_plus = [Chatbot(config=info) for info in local_secrets.PLUS_LOGIN_INFO]
@@ -97,7 +105,7 @@ async def reply(message: telebot.types.Message) -> int:
                     else:
                         userid = message.from_user.id
                         oc = True
-                        s = await bot.reply_to(message, f'*Processing...* \nIt may take a while. {"" if plusAccess(userid) else "Subscribe to Ariel GPT Plus for faster response."}', parse_mode='Markdown')
+                        s = await bot.reply_to(message, f'*Processing...* \nIt may take a while. {"" if plusAccess(userid) else "Subscribe to Ariel GPT Plus for faster response."}\n\n*Tips: {random.choice(TIPS)}*', parse_mode='Markdown')
                         current_gpt = random.choice(chatgpt_plus) if plusAccess(userid) else random.choice(chatgpt)
                         r = current_gpt.ask(prompt=arg)
                         m = regenMarkup(arg)
@@ -149,7 +157,7 @@ async def reply(message: telebot.types.Message) -> int:
                 if arg.strip() == '':
                     await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                 else:
-                    s = await bot.reply_to(message, f'*Processing...* \nIt may take a while. {"" if plusAccess(userid) else "Subscribe to Ariel GPT Plus for faster response."}', parse_mode='Markdown')
+                    s = await bot.reply_to(message, f'*Processing...* \nIt may take a while. {"" if plusAccess(userid) else "Subscribe to Ariel GPT Plus for faster response."}\n\n*Tips: {random.choice(TIPS)}*', parse_mode='Markdown')
                     r = random.choice(chatgpt_plus).ask(prompt=arg) if plusAccess('userid') else current_gpt.ask(prompt=arg)
                     m = regenMarkup(arg)
                     m1 = stopMarkup()
@@ -209,11 +217,11 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             oc = True
             text = callback_query.data
             if text.endswith(' $$'):
-                s = await bot.edit_message_text('*Processing...* \nIt may take a while.', callback_query.message.chat.id, callback_query.message.message_id, parse_mode='Markdown')
+                s = await bot.edit_message_text('*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', callback_query.message.chat.id, callback_query.message.message_id, parse_mode='Markdown')
                 text = text[:-3]
             else:
-                s = await bot.reply_to(callback_query.message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-            await bot.answer_callback_query(callback_query.id, 'Tip: Do not repeat questions too frequently.')
+                s = await bot.reply_to(callback_query.message, '*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', parse_mode='Markdown')
+            await bot.answer_callback_query(callback_query.id, 'Tips: Do not repeat questions too frequently.')
             r = current_gpt.ask(prompt=text)        
             m = regenMarkup(text)
             m1 = stopMarkup()
