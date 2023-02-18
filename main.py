@@ -15,6 +15,7 @@ VOID_HINT = "*ChatGPT didn't respond to your query.* \n" + AN
 ERROR_HINT = '*ChatGPT returned an error to your query.*\n' + AN
 
 chatgpt = [Chatbot(config=info) for info in local_secrets.OPENAI_LOGIN_INFO]
+chatgpt_plus = [Chatbot(config=info) for info in local_secrets.PLUS_LOGIN_INFO]
 bot = AsyncTeleBot(local_secrets.BOT_TOKEN)
 current_gpt = random.choice(chatgpt)
 
@@ -45,6 +46,11 @@ print('Started.')
 oc = False
 forceStopFlag = False
 spinner = Spinner()
+
+def plusAccess(userid: any):
+    with open('subscriber.txt') as f:
+        user_list = [l.strip() for l in f.readlines() if l.strip() != '']
+    return str(userid) in user_list
 
 def op(msg: str):
     n = msg
@@ -89,9 +95,10 @@ async def reply(message: telebot.types.Message) -> int:
                     if arg.strip() == '':
                         await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                     else:
+                        userid = message.from_user.id
                         oc = True
-                        s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-                        current_gpt = random.choice(chatgpt)
+                        s = await bot.reply_to(message, f'*Processing...* \nIt may take a while. {"" if plusAccess(userid) else "Subscribe to Ariel GPT Plus for faster response."}', parse_mode='Markdown')
+                        current_gpt = random.choice(chatgpt_plus) if plusAccess(userid) else random.choice(chatgpt)
                         r = current_gpt.ask(prompt=arg)
                         m = regenMarkup(arg)
                         m1 = stopMarkup()
@@ -110,7 +117,7 @@ async def reply(message: telebot.types.Message) -> int:
                                     continue
                                 while True:
                                     try:
-                                        await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
+                                        await bot.edit_message_text(p+' '+ ("\u26A1" if plusAccess(userid) else spinner.spin), s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                                     except:
                                         await asyncio.sleep(15)
                                     else:
@@ -130,13 +137,20 @@ async def reply(message: telebot.types.Message) -> int:
                     forceStopFlag = False
                     [gpt.reset_chat() for gpt in chatgpt]
                     await bot.reply_to(message, "The conversation is reset.")
+                elif cmd == '/me' or cmd.startswith('/me@'):
+                    if plusAccess(message.from_user.id):
+                        await bot.reply_to(message, f'User ID: {message.from_user.id}\nType: Plus\nExpire: Never')
+                    else:
+                        await bot.reply_to(message, f'User ID: {message.from_user.id}\nType: Standard\nExpire: Never')
             else:
+                userid = message.from_user.id
+                oc = True
                 arg = message.text
                 if arg.strip() == '':
                     await bot.reply_to(message, "Hello, I'm here! Please say something like this:\n  <code>/gpt Who is Ariel?</code>", parse_mode='html')
                 else:
-                    s = await bot.reply_to(message, '*Processing...* \nIt may take a while.', parse_mode='Markdown')
-                    r = current_gpt.ask(prompt=arg)
+                    s = await bot.reply_to(message, f'*Processing...* \nIt may take a while. {"" if plusAccess(userid) else "Subscribe to Ariel GPT Plus for faster response."}', parse_mode='Markdown')
+                    r = random.choice(chatgpt_plus).ask(prompt=arg) if plusAccess('userid') else current_gpt.ask(prompt=arg)
                     m = regenMarkup(arg)
                     m1 = stopMarkup()
                     p = ''
@@ -152,7 +166,7 @@ async def reply(message: telebot.types.Message) -> int:
                                 continue
                             while True:
                                 try:
-                                    await bot.edit_message_text(p+f' {spinner.spin}', s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
+                                    await bot.edit_message_text(p+' '+ ("\u26A1" if plusAccess(userid) else spinner.spin), s.chat.id, s.message_id, reply_markup=m1, parse_mode='Markdown')
                                 except:
                                     await asyncio.sleep(15)
                                 else:
@@ -163,6 +177,8 @@ async def reply(message: telebot.types.Message) -> int:
                         if p == '':
                             p = VOID_HINT
                         await bot.edit_message_text(p+' \u25A1', s.chat.id, s.message_id, reply_markup=m, parse_mode='Markdown')
+                oc = False
+                forceStopFlag = False
 
     except Exception as e:
         oc = False
