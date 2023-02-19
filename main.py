@@ -88,7 +88,7 @@ async def reply(message: telebot.types.Message) -> int:
     global current_gpt
     global spinner
     try:
-        if oc:
+        if oc and not message.text.startswith('/reset'):
             print('Entry 1')
             await bot.reply_to(message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended.')
         else:
@@ -220,7 +220,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
                 s = await bot.edit_message_text('*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', callback_query.message.chat.id, callback_query.message.message_id, parse_mode='Markdown')
                 text = text[:-3]
             else:
-                s = await bot.reply_to(callback_query.message, '*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', parse_mode='Markdown')
+                s = await bot.reply_to(callback_query.message, f'*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', parse_mode='Markdown')
             await bot.answer_callback_query(callback_query.id, 'Tips: Do not repeat questions too frequently.')
             r = current_gpt.ask(prompt=text)        
             m = regenMarkup(text)
