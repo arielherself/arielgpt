@@ -217,7 +217,7 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             oc = True
             text = callback_query.data
             if text.endswith(' $$'):
-                s = await bot.edit_message_text('*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', callback_query.message.chat.id, callback_query.message.message_id, parse_mode='Markdown')
+                s = await bot.edit_message_text(f'*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', callback_query.message.chat.id, callback_query.message.message_id, parse_mode='Markdown')
                 text = text[:-3]
             else:
                 s = await bot.reply_to(callback_query.message, f'*Processing...* \nIt may take a while.\n\n*Tips: {random.choice(TIPS)}*', parse_mode='Markdown')
