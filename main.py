@@ -88,10 +88,11 @@ async def reply(message: telebot.types.Message) -> int:
     global current_gpt
     global spinner
     try:
-        if oc and not message.text.startswith('/reset'):
-            print('Entry 1')
-            await bot.reply_to(message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended.')
-        else:
+        # if oc and not message.text.startswith('/reset'):
+            # print('Entry 1')
+            # await bot.reply_to(message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended.')
+        # else:
+        if True:
             if message.text.split(' ', 1)[0].startswith('/'):
                 l = message.text.split(' ', 1)
                 if len(l) == 1:
@@ -210,10 +211,11 @@ async def callbackReply(callback_query: telebot.types.CallbackQuery):
             else:
                 await bot.answer_callback_query(callback_query.id, 'No process to stop.')
             return
-        if oc:
-            print('Entry 2')
-            await bot.reply_to(callback_query.message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended. Please wait until the last response is generated.')
-        else:
+        # if oc:
+        #     print('Entry 2')
+        #     await bot.reply_to(callback_query.message, 'Sorry, I can only process one message at a time, otherwise the account of Ariel would be suspended. Please wait until the last response is generated.')
+        # else:
+        if True:
             oc = True
             text = callback_query.data
             if text.endswith(' $$'):
